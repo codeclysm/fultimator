@@ -101,6 +101,7 @@ function Rank({npc}) {
       {npc.rank === "champion2" && "Campione (2)"}
       {npc.rank === "champion3" && "Campione (3)"}
       {npc.rank === "champion4" && "Campione (4)"}
+      {npc.rank === "champion5" && "Campione (5)"}
     </>
   );
 }

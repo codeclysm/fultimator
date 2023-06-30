@@ -70,6 +70,9 @@ export function calcInit(npc) {
   if (npc.rank === "champion4") {
     init = init + 4;
   }
+  if (npc.rank === "champion5") {
+    init = init + 5;
+  }
 
   // Armor
   if (npc.armor?.init) {
@@ -281,6 +284,10 @@ export function calcAvailableSkillsFromRank(npc) {
     return 4;
   }
 
+  if (npc.rank === "champion5") {
+    return 5;
+  }
+
   return 0;
 }
 
@@ -453,7 +460,7 @@ export function calcUsedSkillsFromEquip(npc) {
     equip = true;
   }
 
-  if (npc.armor) {
+  if (npc.armor && npc.armor.name !== "Nessuna Armatura") {
     equip = true;
   }
 
