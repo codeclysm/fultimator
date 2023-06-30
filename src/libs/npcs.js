@@ -464,7 +464,7 @@ export function calcUsedSkillsFromEquip(npc) {
     equip = true;
   }
 
-  if (npc.shield) {
+  if (npc.shield && npc.shield.name !== "Nessuno Scudo") {
     equip = true;
   }
 
