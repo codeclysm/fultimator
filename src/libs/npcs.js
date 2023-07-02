@@ -474,3 +474,156 @@ export function calcUsedSkillsFromEquip(npc) {
 
   return equip ? 1 : 0;
 }
+
+export function toObject(npc) {
+  const obj = {
+    basic: {
+      name: npc.name,
+      lvl: npc.lvl,
+      rank: toObjectRank(npc),
+      species: npc.species,
+      description: npc.description,
+      traits: npc.traits,
+    },
+    attributes: npc.attributes,
+    stats: {
+      hp: calcHP(npc),
+      crisis: Math.floor(calcHP(npc) / 2),
+      mp: calcMP(npc),
+      init: calcInit(npc),
+      def: npc.armor?.def > 0 ? (
+          ""+calcDef(npc)
+        ) : (
+          "+"+calcDef(npc)
+        ),
+      mdef: "+"+calcMDef(npc)
+    },
+    affinities: npc.affinities,
+    attacks: toObjectAttacks(npc),
+    weaponattacks: toObjectWeaponAttacks(npc),
+    spells: toObjectSpells(npc),
+    actions: npc.actions,
+    special: toObjectSpecial(npc),
+    equip: {
+      weapons: toObjectWeapons(npc),
+      armor: npc.armor,
+      shield: npc.shield,
+    }
+  }
+  
+  return obj;
+}
+
+function toObjectRank(npc) {
+  switch (npc.rank) {
+    case 'elite':
+      return 'Elite';
+    case 'champion2':
+      return 'Campione (2)';
+    case 'champion3':
+      return 'Campione (3)';
+    case 'champion4':
+      return 'Campione (4)';
+    case 'champion5':
+      return 'Campione (5)';
+    default:
+      return '';
+  }
+}
+
+function toObjectAttacks(npc) {
+  const attacks = npc.attacks?.map((attack) => {
+    return {
+      name: attack.name,
+      range: attack.range,
+      attr1: attack.attr1,
+      attr2: attack.attr2,
+      precision: calcPrecision(attack, npc),
+      damage: calcDamage(attack, npc),
+      type: attack.type,
+      special: attack.special,
+    }
+  })
+  
+  return attacks;
+}
+
+function toObjectWeaponAttacks(npc) {
+  const attacks = npc.weaponattacks?.map((attack) => {
+    return {
+      name: attack.name,
+      weapon: attack.weapon,
+      precision: calcPrecision(attack, npc),
+      damage: calcDamage(attack, npc),
+      special: attack.special,
+    }
+  })
+  
+  return attacks;
+}
+
+function toObjectSpells(npc) {
+  const spells = npc.spells?.map((spell) => {
+    return {
+      name: spell.name,
+      type: spell.type,
+      magic: spell.magic,
+      mp: spell.mp,
+      target: spell.target,
+      duration: spell.duration,
+      effect: spell.effect,
+      attr1: spell.attr1,
+      attr2: spell.attr2,
+    }
+  })
+  
+  return spells;
+}
+
+function toObjectSpecial(npc) {
+  const special = [];
+  
+  if (npc.special) {
+    npc.special.forEach((s) => {
+      special.push(s);
+    });
+  }
+  
+  // Species
+  if (npc.species === "Costrutto") {
+    special.push({
+      name: "Costrutto",
+      effect: "Immune allo status **avvelenato**",
+    });
+  }
+  
+  if (npc.species === "Non Morto") {
+    special.push({
+      name: "Non Morto",
+      effect:
+        "Immune allo status **avvelenato** e ciò che farebbe recuperare Punti Vita può invece ferire (vedi pag **305**)",
+    });
+  }
+  
+  if (npc.species === "Pianta") {
+    special.push({
+      name: "Pianta",
+      effect: "Immune agli status **confuso**, **furente**, **scosso**",
+    });
+  }
+  
+  return special
+}
+
+function toObjectWeapons(npc) {
+  const weapons = [];
+  
+  npc.weaponattacks?.forEach((attack) => {
+    if (weapons.find((weapon) => weapon.name === attack.weapon.name)) {
+      return;
+    }
+    weapons.push(attack.weapon);
+  });
+  
+  return weapons
+}
