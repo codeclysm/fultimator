@@ -567,7 +567,7 @@ function toObjectSpells(npc) {
     return {
       name: spell.name,
       type: spell.type,
-      magic: spell.magic,
+      magic: calcMagic(npc),
       mp: spell.mp,
       target: spell.target,
       duration: spell.duration,
